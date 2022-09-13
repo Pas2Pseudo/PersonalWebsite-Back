@@ -9,5 +9,11 @@ func main() {
 		return c.SendString("Hello, World 👋!")
 	})
 
-	app.Listen(":3000")
+
+	redisManager := newRedisManager("127.0.0.1", 6379, "", 0)
+
+	redisManager.set("test", "Hello World !")
+	println(redisManager.get("test"))
+
+	app.Listen(":8393")
 }
