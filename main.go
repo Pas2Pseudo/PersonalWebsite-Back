@@ -1,6 +1,11 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"strconv"
+)
+
+var config = GetConfig()
 
 func main() {
 	app := fiber.New()
@@ -9,11 +14,14 @@ func main() {
 		return c.SendString("Hello, World 👋!")
 	})
 
-
-	redisManager := newRedisManager("127.0.0.1", 6379, "", 0)
+	var redisConfig = config.RedisConfig
+	redisManager := newRedisManager(redisConfig.Address, redisConfig.Port, redisConfig.Password, redisConfig.DB)
 
 	redisManager.set("test", "Hello World !")
 	println(redisManager.get("test"))
 
-	app.Listen(":8393")
+	err := app.Listen(":" + strconv.Itoa(config.Port))
+	if err != nil {
+		return
+	}
 }
